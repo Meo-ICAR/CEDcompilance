@@ -8,58 +8,90 @@ use Illuminate\Http\Request;
 class OrganizzazioneController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Visualizza l'elenco delle organizzazioni.
      */
     public function index()
     {
-        //
+        $organizzazioni = \App\Models\Organizzazione::all();
+        return view('organizzazioni.index', compact('organizzazioni'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostra il form per creare una nuova organizzazione.
      */
     public function create()
     {
-        //
+        return view('organizzazioni.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Salva una nuova organizzazione nel database.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'partita_iva' => 'required|string|max:20|unique:organizzaziones',
+            'indirizzo' => 'required|string|max:255',
+            'citta' => 'required|string|max:100',
+            'provincia' => 'required|string|max:2',
+            'cap' => 'required|string|max:5',
+            'paese' => 'required|string|max:100',
+            'referente' => 'required|string|max:255',
+            'email_referente' => 'required|email|max:255',
+            'telefono_referente' => 'nullable|string|max:20',
+        ]);
+        \App\Models\Organizzazione::create($validated);
+        return redirect()->route('organizzazioni.index')->with('success', 'Organizzazione creata con successo!');
     }
 
     /**
-     * Display the specified resource.
+     * Visualizza una singola organizzazione.
      */
-    public function show(Organizzazione $organizzazione)
+    public function show($id)
     {
-        //
+        $organizzazione = \App\Models\Organizzazione::findOrFail($id);
+        return view('organizzazioni.show', compact('organizzazione'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostra il form per modificare una organizzazione.
      */
-    public function edit(Organizzazione $organizzazione)
+    public function edit($id)
     {
-        //
+        $organizzazione = \App\Models\Organizzazione::findOrFail($id);
+        return view('organizzazioni.edit', compact('organizzazione'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Aggiorna una organizzazione esistente.
      */
-    public function update(Request $request, Organizzazione $organizzazione)
+    public function update(Request $request, $id)
     {
-        //
+        $organizzazione = \App\Models\Organizzazione::findOrFail($id);
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'partita_iva' => 'required|string|max:20|unique:organizzaziones,partita_iva,' . $organizzazione->id,
+            'indirizzo' => 'required|string|max:255',
+            'citta' => 'required|string|max:100',
+            'provincia' => 'required|string|max:2',
+            'cap' => 'required|string|max:5',
+            'paese' => 'required|string|max:100',
+            'referente' => 'required|string|max:255',
+            'email_referente' => 'required|email|max:255',
+            'telefono_referente' => 'nullable|string|max:20',
+        ]);
+        $organizzazione->update($validated);
+        return redirect()->route('organizzazioni.index')->with('success', 'Organizzazione aggiornata con successo!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina una organizzazione.
      */
-    public function destroy(Organizzazione $organizzazione)
+    public function destroy($id)
     {
-        //
+        $organizzazione = \App\Models\Organizzazione::findOrFail($id);
+        $organizzazione->delete();
+        return redirect()->route('organizzazioni.index')->with('success', 'Organizzazione eliminata con successo!');
     }
 }

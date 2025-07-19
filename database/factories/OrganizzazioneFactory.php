@@ -17,7 +17,16 @@ class OrganizzazioneFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nome' => $this->faker->company(),
+            'partita_iva' => $this->faker->unique()->numerify('###########'),
+            'indirizzo' => $this->faker->streetAddress(),
+            'citta' => $this->faker->city(),
+            'provincia' => $this->faker->lexify('??'),
+            'cap' => $this->faker->numerify('#####'),
+            'paese' => 'Italia',
+            'referente' => $this->faker->name(),
+            'email_referente' => $this->faker->unique()->safeEmail(),
+            'telefono_referente' => $this->faker->phoneNumber(),
         ];
     }
 }
