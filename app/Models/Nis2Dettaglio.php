@@ -15,6 +15,8 @@ class Nis2Dettaglio extends Model
         'id_sottovoce',
         'sottovoce',
         'adempimento',
+        'documenti',
+        'driveurl',
         'documentazione',
     ];
 }

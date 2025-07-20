@@ -338,4 +338,20 @@ class GoogleDriveAdapter implements FilesystemAdapter
         
         return $mimeTypes[$extension] ?? 'application/octet-stream';
     }
+
+    /**
+     * Ottieni il servizio Google Drive
+     */
+    public function getService(): Drive
+    {
+        return $this->service;
+    }
+
+    /**
+     * Ottieni l'ID della cartella root
+     */
+    public function getFolderId(): string
+    {
+        return $this->root;
+    }
 }
