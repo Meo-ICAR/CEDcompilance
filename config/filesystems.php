@@ -60,6 +60,16 @@ return [
             'report' => false,
         ],
 
+        'google_drive' => [
+            'driver' => 'google_drive',
+            'client_id' => env('GOOGLE_DRIVE_CLIENT_ID'),
+            'client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
+            'access_token' => env('GOOGLE_DRIVE_ACCESS_TOKEN'),
+            'refresh_token' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
+            'expires_in' => env('GOOGLE_DRIVE_EXPIRES_IN', 3600),
+            'folder_id' => env('GOOGLE_DRIVE_FOLDER_ID', 'root'),
+        ],
+
     ],
 
     /*
