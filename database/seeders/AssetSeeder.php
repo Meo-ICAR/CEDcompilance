@@ -2,16 +2,27 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AssetSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        \App\Models\Asset::factory(20)->create();
+        $categories = ['Server', 'Firewall', 'Database', 'Workstation', 'Cloud Service', 'Network Switch'];
+        $orgs = \App\Models\Organizzazione::all();
+
+        foreach ($orgs as $org) {
+            foreach ($categories as $cat) {
+                \App\Models\Asset::factory()->create([
+                    'organizzazione_id' => $org->id,
+                    'nome' => $cat . ' ' . fake()->unique()->numerify('##'),
+                    'categoria' => $cat,
+                    'descrizione' => "Asset di tipo $cat per l'organizzazione {$org->nome}",
+                    'ubicazione' => fake()->city(),
+                    'responsabile' => fake()->name() . ' (' . fake()->jobTitle() . ')',
+                    'stato' => fake()->randomElement(['attivo', 'in manutenzione', 'disattivato']),
+                ]);
+            }
+        }
     }
 }
