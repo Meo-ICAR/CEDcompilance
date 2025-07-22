@@ -8,58 +8,88 @@ use Illuminate\Http\Request;
 class RischioController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Visualizza l'elenco dei rischi.
      */
     public function index()
     {
-        //
+        $rischi = \App\Models\Rischio::with('asset')->get();
+        return view('rischi.index', compact('rischi'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostra il form per creare un nuovo rischio.
      */
     public function create()
     {
-        //
+        $assets = \App\Models\Asset::all();
+        return view('rischi.create', compact('assets'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Salva un nuovo rischio nel database.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'asset_id' => 'required|exists:assets,id',
+            'titolo' => 'required|string|max:255',
+            'descrizione' => 'nullable|string',
+            'probabilita' => 'required|in:bassa,media,alta',
+            'impatto' => 'required|in:basso,medio,alto',
+            'stato' => 'required|string|max:50',
+            'azioni_mitigazione' => 'nullable|string',
+            'data_valutazione' => 'nullable|date',
+        ]);
+        \App\Models\Rischio::create($validated);
+        return redirect()->route('rischi.index')->with('success', 'Rischio creato con successo!');
     }
 
     /**
-     * Display the specified resource.
+     * Visualizza un singolo rischio.
      */
-    public function show(Rischio $rischio)
+    public function show($id)
     {
-        //
+        $rischio = \App\Models\Rischio::with('asset')->findOrFail($id);
+        return view('rischi.show', compact('rischio'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostra il form per modificare un rischio.
      */
-    public function edit(Rischio $rischio)
+    public function edit($id)
     {
-        //
+        $rischio = \App\Models\Rischio::findOrFail($id);
+        $assets = \App\Models\Asset::all();
+        return view('rischi.edit', compact('rischio', 'assets'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Aggiorna un rischio esistente.
      */
-    public function update(Request $request, Rischio $rischio)
+    public function update(Request $request, $id)
     {
-        //
+        $rischio = \App\Models\Rischio::findOrFail($id);
+        $validated = $request->validate([
+            'asset_id' => 'required|exists:assets,id',
+            'titolo' => 'required|string|max:255',
+            'descrizione' => 'nullable|string',
+            'probabilita' => 'required|in:bassa,media,alta',
+            'impatto' => 'required|in:basso,medio,alto',
+            'stato' => 'required|string|max:50',
+            'azioni_mitigazione' => 'nullable|string',
+            'data_valutazione' => 'nullable|date',
+        ]);
+        $rischio->update($validated);
+        return redirect()->route('rischi.index')->with('success', 'Rischio aggiornato con successo!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un rischio.
      */
-    public function destroy(Rischio $rischio)
+    public function destroy($id)
     {
-        //
+        $rischio = \App\Models\Rischio::findOrFail($id);
+        $rischio->delete();
+        return redirect()->route('rischi.index')->with('success', 'Rischio eliminato con successo!');
     }
 }
